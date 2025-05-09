@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop"
 
 
-export default function CroppingTool({ setCroppedImage } : {
-    setCroppedImage: React.Dispatch<React.SetStateAction<HTMLCanvasElement | null>>
+export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
+    setCroppedImage: React.Dispatch<React.SetStateAction<HTMLCanvasElement | null>>,
+    BOARDSIZE: number
 }) {
     const imageUploadEl = useRef<HTMLInputElement>(null);
     const [uploadedFile, setUploadedFile] = useState<string | null>(null); // base64url string
@@ -11,7 +12,6 @@ export default function CroppingTool({ setCroppedImage } : {
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [croppedPixels, setCroppedPixels] = useState<Area | null>(null);
-    const [BOARDSIZE] = useState(450);
 
     // get user uploaded image and display on page, to be re-sized
     function handle_file_upload() {
@@ -64,7 +64,7 @@ export default function CroppingTool({ setCroppedImage } : {
 
   return (
     <>
-        <h2>Upload an Image to play</h2>
+        <p>Upload an Image to play with, crop it to your liking.</p>
         <input type='file' accept='image/png, image/jpeg' 
         onChange={() => handle_file_upload()}
         ref={imageUploadEl}
@@ -72,6 +72,7 @@ export default function CroppingTool({ setCroppedImage } : {
         <div style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}>
         {uploadedFile && (
             <Cropper
+                showGrid={false}
                 image={uploadedFile}
                 crop={crop}
                 zoom={zoom}
