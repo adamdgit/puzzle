@@ -18,10 +18,20 @@ body {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(3, 150px);
+  grid-template-columns: repeat(4, 110px);
+}
+
+.board img {
+  transition: all 40ms ease-in-out; 
 }
 
 .play-btn {
   position: absolute;
   bottom: -30px;
+}
+
+.animate {
+  --x: 0;
+  --y: 0;
+  transform: translate(var(--x), var(--y));
 }
