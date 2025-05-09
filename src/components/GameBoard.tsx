@@ -1,13 +1,13 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { ASSERT } from "../utils/assert";
+import { move_is_valid } from "../utils/moveIsValid";
 
-export default function GameBoard({ gameImage } : {
-    gameImage: HTMLCanvasElement
+export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
+    gameImage: HTMLCanvasElement,
+    BOARDSIZE: number,
+    ROWS: number,
+    COLUMNS: number
 }) {
-    const [ROWS] = useState(3);
-    const [COLUMNS] = useState(3);
-    const [BOARDSIZE] = useState(450); // pixels for board height/width
-
     const board = useRef<HTMLDivElement | null>(null);
     const canvas = useRef<HTMLCanvasElement | null>(null);
 
@@ -63,7 +63,8 @@ export default function GameBoard({ gameImage } : {
 
         // represents the tiles index, after shuffling we can simply 
         // move the tiles in the DOM to start the game
-        const shuffled_tiles_loc = [0,1,2,3,4,5,6,7,8];
+        const shuffled_tiles_loc = Array.from({ length: ROWS * COLUMNS }, (_, i) => i);
+
         let blank = 8;
 
         let validCol = blank % COLUMNS
@@ -108,40 +109,100 @@ export default function GameBoard({ gameImage } : {
             return
         }
 
-        const board_empty_elements = [...board.current.children];
+        // create placeholders based on boardsize rows and columns
+        for (let i = 0; i < (ROWS * COLUMNS); i++) {
+            const placehodler = document.createElement("div");
+            board.current.append(placehodler);
+        }
+
+        const board_placeholder_elements = [...board.current.children];
 
         tile_elements.forEach((tile, idx) => {
-            const newTile = document.createElement('img');
-            newTile.src = tile
-            newTile.width = BOARDSIZE / ROWS
-            newTile.height = BOARDSIZE / COLUMNS
-
-            const new_location = shuffled_tiles_loc.indexOf(idx);
-            board_empty_elements[new_location].replaceWith(newTile);
+            if (tile === "blank") {
+                const newTile = document.createElement('div');
+                newTile.dataset.idx = idx.toString();
+                const new_location = shuffled_tiles_loc.indexOf(idx);
+                board_placeholder_elements[new_location].replaceWith(newTile);
+            } else {
+                const newTile = document.createElement('img');
+                newTile.src = tile;
+                newTile.width = BOARDSIZE / ROWS;
+                newTile.height = BOARDSIZE / COLUMNS;
+                newTile.dataset.idx = idx.toString();
+                const new_location = shuffled_tiles_loc.indexOf(idx);
+                board_placeholder_elements[new_location].replaceWith(newTile);
+            }
         })
 
     }
 
+    function handle_check_move(e: Event) {
+        // for a move to be valid the clicked tile must be adjacent to the blank
+        const target_tile = e.target as HTMLElement;
+
+        if (!target_tile) return
+
+        const board_tiles = [...board.current!.children] as HTMLElement[];
+        const target_idx = board_tiles.indexOf(target_tile);
+        const blank_Idx = board_tiles.findIndex(tile => tile.dataset.idx === String(ROWS * COLUMNS - 1));
+        const blank_tile =  board_tiles.find(tile => tile.dataset.idx === String(ROWS * COLUMNS - 1));
+
+        // if true the selected move is valid and can be swapped with the blank tile
+        // returns up, down, left, right or null
+        const location = move_is_valid(target_idx, blank_Idx, COLUMNS); 
+
+        // move is not valid, show user some visual feedback
+        if (!location) {
+            // setError("Invalid move!");
+            return
+        }
+
+        if (!blank_tile) return
+
+        // swap the tiles in DOM with animations       
+        target_tile.classList.add('animate');
+
+        // set either x or y depending on which position we need to move the tile
+        if      (location === 'left') target_tile.style.setProperty('--x', '-100%');
+        else if (location === 'right') target_tile.style.setProperty('--x', '100%');
+        else if (location === 'up') target_tile.style.setProperty('--y', '-100%');
+        else if (location === 'down') target_tile.style.setProperty('--y', '100%');
+
+        const animateTile = setTimeout(() => {
+            // reset x & y each move to prevent wierd animations
+            target_tile.classList.remove('animate')
+            target_tile.style.setProperty('--x', '')
+            target_tile.style.setProperty('--y', '')
+
+            // Swaps blank tile and selected tile using a temporary div
+            const temp_tile = e.target as HTMLElement;
+            const temp_blank = document.createElement("div");
+            blank_tile.replaceWith(temp_blank);
+            target_tile.replaceWith(blank_tile);
+            temp_blank.replaceWith(temp_tile);
+            clearTimeout(animateTile)
+        }, 45);
+        // animation is set to 40ms, so we want to allow animation to go off before updating the DOM nodes
+    }
+
+    function add_event_handlers_tiles() {
+        [...board.current!.children].forEach(tile => {
+            tile.addEventListener('pointerdown', handle_check_move)
+        });
+    }
+
     useEffect(() => {
+        if (!board.current) return;
+
         const tile_elements = create_tiles_from_img();
         shuffle_board_tiles(tile_elements);
-        // add_click_handlers_tiles();
-    },[])
+        add_event_handlers_tiles();
+    },[board.current]);
 
   return (
     <>
         <canvas ref={canvas}></canvas>
-        <div className='board' ref={board}>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+        <div className='board' ref={board}></div>
     </>
   )
 }
