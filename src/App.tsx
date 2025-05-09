@@ -4,21 +4,30 @@ import GameBoard from './components/GameBoard';
 
 function App() {
   const [croppedImage, setCroppedImage] = useState<HTMLCanvasElement | null>(null);
+  const [BOARDSIZE] = useState(440);
+  const [ROWS] = useState(4);
+  const [COLUMNS] = useState(4);
 
   return (
     <main>
-      <h1>Picture Puzzle Game</h1>
+      <h1>Sliding Picture Puzzle</h1>
 
       <CroppingTool
         setCroppedImage={setCroppedImage}
+        BOARDSIZE={BOARDSIZE}
        />
 
-      {croppedImage && (
+      {/* {croppedImage && (
         <img src={croppedImage.toDataURL()} alt="Cropped" />
-      )}
+      )} */}
 
       {croppedImage && 
-        <GameBoard gameImage={croppedImage} />
+        <GameBoard 
+          gameImage={croppedImage} 
+          BOARDSIZE={BOARDSIZE}
+          ROWS={ROWS}
+          COLUMNS={COLUMNS}
+        />
       }
     </main>
   )
