@@ -22,7 +22,7 @@ body {
 }
 
 .board img {
-  transition: all 40ms ease-in-out; 
+  user-select: none;
 }
 
 .play-btn {
