@@ -47,29 +47,20 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
 
         if (!blank_tile) return
         
-        let translateTo, translateFrom = '';
-        if (direction === 'left') {
-            translateTo = `translateX(-100%)`;
-            translateFrom = `translateX(0%)`;
-        }
-        else if (direction === 'right') {
-            translateTo = `translateX(100%)`;
-            translateFrom = `translateX(0%)`;
-        }
-        else if (direction === 'up') {
-            translateTo = `translateY(-100%)`;
-            translateFrom = `translateY(0%)`;
-        }
-        else if (direction === 'down') {
-            translateTo = `translateY(100%)`;
-            translateFrom = `translateY(0%)`;
+        const translateMap = {
+            "left": { to: `translateX(-100%)`, reset: `translateX(0%)` },
+            "right": { to: `translateX(100%)`, reset: `translateX(0%)` },
+            "up": { to: `translateY(-100%)`, reset: `translateY(0%)` },
+            "down": { to: `translateY(100%)`, reset: `translateY(0%)` },
         };
+        const translateTo = translateMap[direction].to;
+        const translateReset = translateMap[direction].reset;
 
         controls.start({
             transform: translateTo,
             transition: { duration: 0.040 },
         }).then(() => {
-            controls.set({ transform: translateFrom });
+            controls.set({ transform: translateReset });
 
             setBoardTiles(prev => {
                 const updated = [...prev];
@@ -94,6 +85,7 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
                 data-idx={tile.idx}
                 animate={controls}
                 onClick={handle_check_move}
+                draggable={false}
             />
         )
     }
