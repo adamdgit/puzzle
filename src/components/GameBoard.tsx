@@ -16,7 +16,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
     const canvas = useRef<HTMLCanvasElement | null>(null);
     const [boardTiles, setBoardTiles] = useState<TileProps[]>([]);
 
-    function create_tiles_from_img() {
+    function createTileFromImg() {
         const ctx = canvas?.current?.getContext('2d');
 
         if (!canvas.current || !ctx) {
@@ -65,7 +65,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
         return tile_elements;
     };
 
-    function shuffle_board_tiles(unshuffled_tiles: TileProps[]) {
+    function shuffleBoard(unshuffled_tiles: TileProps[]) {
         // represents the tiles index, after shuffling we can simply 
         // move the tiles in the DOM to start the game
         const shuffled_tiles = Array.from({ length: ROWS * COLUMNS }, (_, i) => i);
@@ -127,8 +127,8 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
     useEffect(() => {
         if (!board.current) return;
 
-        const unshuffled_tiles = create_tiles_from_img();
-        shuffle_board_tiles(unshuffled_tiles!);
+        const unshuffled_tiles = createTileFromImg();
+        shuffleBoard(unshuffled_tiles!);
     },[board.current]);
 
   return (

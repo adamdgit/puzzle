@@ -1,5 +1,6 @@
 import { motion, useAnimation } from 'motion/react'
 import { move_is_valid } from "../utils/moveIsValid";
+import { useEffect } from 'react';
 
 type TileProps = {
     imgSrc: string,
@@ -15,7 +16,7 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
 }) {
     const controls = useAnimation();
 
-    function check_win_condition(): boolean {      
+    function isWinner(): boolean {      
         // if we make it through the array without returning false,
         // then all index are in correct order and puzzle must be solved
         for (const [idx, tile] of boardTiles.entries()) {
@@ -25,7 +26,7 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
         return true;
     }
 
-    function handle_check_move(e: React.MouseEvent<HTMLImageElement>) {
+    function handleMoveTile(e: React.MouseEvent<HTMLImageElement>) {
         // for a move to be valid the clicked tile must be adjacent to the blank
         const target_tile = e.target as HTMLElement;
 
@@ -40,12 +41,10 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
         const direction = move_is_valid(target_idx, blank_Idx, cols); 
 
         // move is not valid, show user some visual feedback
-        if (!direction) {
+        if (!direction || !blank_tile) {
             // setError("Invalid move!");
             return
         }
-
-        if (!blank_tile) return
         
         const translateMap = {
             "left": { to: `translateX(-100%)`, reset: `translateX(0%)` },
@@ -67,11 +66,18 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
                 [updated[target_idx], updated[blank_Idx]] = [updated[blank_Idx], updated[target_idx]];
                 return updated;
             });
-
-            const is_winner = check_win_condition();
-            if (is_winner) console.log("WINNER!")
         });
     }
+
+    // Check for win condition every time the boardtiles updates
+    useEffect(() => {
+        if (!boardTiles) return
+
+        if (isWinner()) {
+            console.log("You WIN!");
+            // handle win logic
+        }
+    },[boardTiles])
 
     if (tile.imgSrc === "blank") {
         return (
@@ -84,7 +90,7 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
                 src={tile.imgSrc}
                 data-idx={tile.idx}
                 animate={controls}
-                onClick={handle_check_move}
+                onClick={handleMoveTile}
                 draggable={false}
             />
         )

@@ -16,9 +16,16 @@ body {
   color: #111;
 }
 
+main {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(4, 110px);
+  border: 5px solid #333;
 }
 
 .board img {
