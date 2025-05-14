@@ -70,7 +70,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
         // move the tiles in the DOM to start the game
         const shuffled_tiles = Array.from({ length: ROWS * COLUMNS }, (_, i) => i);
 
-        let blank = 8;
+        let blank = ROWS * COLUMNS -1; // starting blank index
 
         let validCol = blank % COLUMNS
         let validRow = Math.floor(blank / ROWS)
@@ -134,7 +134,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
   return (
     <>
         <canvas ref={canvas}></canvas>
-        <div className='board' ref={board}>
+        <div className='board' ref={board} draggable={false}>
             {boardTiles.map(tile => 
                 <Tile 
                     key={tile.idx}
