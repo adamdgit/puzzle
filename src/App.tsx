@@ -10,7 +10,7 @@ function App() {
 
   return (
     <main>
-      <h1>Sliding Picture Puzzle</h1>
+      <h1 style={{textAlign: "center"}}>Sliding Picture Puzzle</h1>
 
       <CroppingTool
         setCroppedImage={setCroppedImage}
