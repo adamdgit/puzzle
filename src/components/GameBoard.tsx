@@ -43,8 +43,8 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
                 const x = tileWidth * j;
                 const y = tileHeight * i;
 
-                // bottom-right corner tile must be blank for game to work
-                if (x === (tileWidth * (ROWS-1)) && y === (tileHeight * (COLUMNS-1))) {
+                // last iteration is always a blank tile for game to work correctly
+                if (counter === ROWS * COLUMNS -1) {
                     tile_elements.push({ imgSrc: "blank", idx: counter})
                 } else {
                     // draw tile to canvas
@@ -133,7 +133,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
 
   return (
     <>
-        <canvas ref={canvas}></canvas>
+        <canvas ref={canvas} style={{display: "none"}}></canvas>
         <div className='board' ref={board} draggable={false}>
             {boardTiles.map(tile => 
                 <Tile 
