@@ -13,6 +13,8 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [croppedPixels, setCroppedPixels] = useState<Area | null>(null);
 
+    const [hideCropper, setHideCropper] = useState(false);
+
     // get user uploaded image and display on page, to be re-sized
     function handle_file_upload() {
         const file = imageUploadEl.current?.files?.[0];
@@ -59,34 +61,36 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
             );
 
             setCroppedImage(canvas);
+            setHideCropper(true);
         };
     }
 
   return (
+    !hideCropper &&
     <>
         <p>Upload an Image to play with, crop it to your liking.</p>
         <input type='file' accept='image/png, image/jpeg' 
-        onChange={() => handle_file_upload()}
-        ref={imageUploadEl}
+            onChange={() => handle_file_upload()}
+            ref={imageUploadEl}
         />
         <div style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}>
-        {uploadedFile && (
-            <Cropper
-                showGrid={false}
-                image={uploadedFile}
-                crop={crop}
-                zoom={zoom}
-                aspect={1} // square
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
-                onCropComplete={(croppedArea, croppedPixels) => {
-                    setCroppedAreaPixels(croppedArea)
-                    setCroppedPixels(croppedPixels)
-                }}
-            />
-        )}
-        <button className='play-btn' onClick={() => handle_crop()}>Play Game!</button>
+            {uploadedFile && (
+                <Cropper
+                    showGrid={false}
+                    image={uploadedFile}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={1} // square
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={(croppedArea, croppedPixels) => {
+                        setCroppedAreaPixels(croppedArea)
+                        setCroppedPixels(croppedPixels)
+                    }}
+                />
+            )}
         </div>
+        <button className='play-btn' onClick={handle_crop}>Play Game!</button>
     </>
   )
 }
