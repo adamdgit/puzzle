@@ -1,6 +1,5 @@
 import { motion, useAnimation } from 'motion/react'
 import { move_is_valid } from "../utils/moveIsValid";
-import { useEffect } from 'react';
 
 type TileProps = {
     imgSrc: string,
@@ -16,10 +15,10 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
 }) {
     const controls = useAnimation();
 
-    function isWinner(): boolean {      
+    function isWinner(updatedTiles: TileProps[]): boolean {      
         // if we make it through the array without returning false,
         // then all index are in correct order and puzzle must be solved
-        for (const [idx, tile] of boardTiles.entries()) {
+        for (const [idx, tile] of updatedTiles.entries()) {
             if (tile.idx !== idx) return false
         };
 
@@ -61,23 +60,17 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
         }).then(() => {
             controls.set({ transform: translateReset });
 
-            setBoardTiles(prev => {
-                const updated = [...prev];
-                [updated[target_idx], updated[blank_Idx]] = [updated[blank_Idx], updated[target_idx]];
-                return updated;
-            });
+            const updatedTiles = [...boardTiles];
+            [updatedTiles[target_idx], updatedTiles[blank_Idx]] = [updatedTiles[blank_Idx], updatedTiles[target_idx]];
+
+            if (isWinner(updatedTiles)) {
+                console.log("You WIN!");
+                // handle win logic
+            }
+
+            setBoardTiles(updatedTiles);
         });
     }
-
-    // Check for win condition every time the boardtiles updates
-    useEffect(() => {
-        if (!boardTiles) return
-
-        if (isWinner()) {
-            console.log("You WIN!");
-            // handle win logic
-        }
-    },[boardTiles])
 
     if (tile.imgSrc === "blank") {
         return (
