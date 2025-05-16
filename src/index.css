@@ -3,6 +3,8 @@
   line-height: 1.5;
   font-size: 16px;
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  --boardsize: 4;
+  --tilesize: 100px;
 }
 
 /*-----CSS RESETS-----*/
@@ -22,9 +24,24 @@ main {
   justify-content: center;
 }
 
+.uploadImgBtn {
+  padding: .8rem 1.4rem;
+  background-color: #333;
+  border: 1px solid #222;
+  color: #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 15px 0 #ccc;
+  width: fit-content;
+  transition: 150ms ease-in-out;
+}
+
+.uploadImgBtn:hover {
+  background-color: #000;
+}
+
 .board {
   display: grid;
-  grid-template-columns: repeat(4, 110px);
+  grid-template-columns: repeat(var(--boardsize), var(--tilesize));
   border: 5px solid #333;
 }
 
@@ -33,12 +50,13 @@ main {
 }
 
 .play-btn {
-  padding: 1rem;
+  padding: .8rem 1.4rem;
   background-color: white;
   border: 1px solid #dcdcdc;
   border-radius: 4px;
   box-shadow: 0 4px 15px 0 #ddd;
   width: fit-content;
+  transition: 150ms ease-in-out;
 }
 
 .play-btn:hover {
