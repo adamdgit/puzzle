@@ -16,7 +16,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
     const [hideCropper, setHideCropper] = useState(false);
 
     // get user uploaded image and display on page, to be re-sized
-    function handle_file_upload() {
+    function handleFileUpload() {
         const file = imageUploadEl.current?.files?.[0];
 
         if (file) {
@@ -32,7 +32,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
     };
 
     // crops the image to prepare for game start
-    function handle_crop() {
+    function handleCrop() {
         if (!uploadedFile || !croppedAreaPixels || !croppedPixels) {
             // setError("You must upload an image before starting the game")
             return
@@ -78,7 +78,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
             style={{display: "none"}}
             type='file' 
             accept='image/png, image/jpeg' 
-            onChange={() => handle_file_upload()}
+            onChange={() => handleFileUpload()}
             ref={imageUploadEl}
         />
         <div style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}>
@@ -98,7 +98,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
                 />
             )}
         </div>
-        <button className='play-btn' onClick={handle_crop}>Play!</button>
+        <button className='play-btn' onClick={handleCrop}>Play!</button>
     </>
   )
 }
