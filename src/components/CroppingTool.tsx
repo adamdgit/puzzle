@@ -65,11 +65,19 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
         };
     }
 
+    function handleClickInput() {
+        imageUploadEl.current?.click();
+    }
+
   return (
     !hideCropper &&
     <>
-        <p>Upload an Image to play with, crop it to your liking.</p>
-        <input type='file' accept='image/png, image/jpeg' 
+        <p>Select or take a picture to play with</p>
+        <button className="uploadImgBtn" onClick={handleClickInput}>Upload Image</button>
+        <input 
+            style={{display: "none"}}
+            type='file' 
+            accept='image/png, image/jpeg' 
             onChange={() => handle_file_upload()}
             ref={imageUploadEl}
         />
@@ -90,7 +98,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
                 />
             )}
         </div>
-        <button className='play-btn' onClick={handle_crop}>Play Game!</button>
+        <button className='play-btn' onClick={handle_crop}>Play!</button>
     </>
   )
 }
