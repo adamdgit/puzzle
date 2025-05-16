@@ -26,7 +26,6 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
     }
 
     function handleMoveTile(e: React.MouseEvent<HTMLImageElement>) {
-        // for a move to be valid the clicked tile must be adjacent to the blank
         const target_tile = e.target as HTMLElement;
 
         if (!target_tile) return
@@ -35,21 +34,20 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
         const blank_Idx = boardTiles.findIndex(tile => tile.idx === (rows * cols - 1));
         const blank_tile =  boardTiles.find(tile => tile.idx === (rows * cols - 1));
 
-        // if true the selected move is valid and can be swapped with the blank tile
-        // returns up, down, left, right or null
+        // returns direction of the blank tile, so we can animate the tile correctly
         const direction = move_is_valid(target_idx, blank_Idx, cols); 
 
-        // move is not valid, show user some visual feedback
+        // direction can be null (invalid move), show user some visual feedback
         if (!direction || !blank_tile) {
             // setError("Invalid move!");
             return
         }
         
         const translateMap = {
-            "left": { to: `translateX(-100%)`, reset: `translateX(0%)` },
+            "left":  { to: `translateX(-100%)`, reset: `translateX(0%)` },
             "right": { to: `translateX(100%)`, reset: `translateX(0%)` },
-            "up": { to: `translateY(-100%)`, reset: `translateY(0%)` },
-            "down": { to: `translateY(100%)`, reset: `translateY(0%)` },
+            "up":    { to: `translateY(-100%)`, reset: `translateY(0%)` },
+            "down":  { to: `translateY(100%)`, reset: `translateY(0%)` },
         };
         const translateTo = translateMap[direction].to;
         const translateReset = translateMap[direction].reset;
