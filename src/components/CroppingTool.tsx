@@ -2,9 +2,10 @@ import { useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop"
 
 
-export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
+export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarted } : {
     setCroppedImage: React.Dispatch<React.SetStateAction<HTMLCanvasElement | null>>,
-    BOARDSIZE: number
+    BOARDSIZE: number,
+    setGameStarted: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const imageUploadEl = useRef<HTMLInputElement>(null);
     const [uploadedFile, setUploadedFile] = useState<string | null>(null); // base64url string
@@ -63,6 +64,8 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE } : {
             setCroppedImage(canvas);
             setHideCropper(true);
         };
+
+        setGameStarted(true);
     }
 
     function handleClickInput() {
