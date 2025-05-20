@@ -68,3 +68,8 @@ main {
   --y: 0;
   transform: translate(var(--x), var(--y));
 }
+
+.timer {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
