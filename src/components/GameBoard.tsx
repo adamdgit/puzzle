@@ -6,11 +6,12 @@ type TileProps = {
     idx: number
 }
 
-export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
+export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGameEnded } : {
     gameImage: HTMLCanvasElement,
     BOARDSIZE: number,
     ROWS: number,
-    COLUMNS: number
+    COLUMNS: number, 
+    setGameEnded: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const board = useRef<HTMLDivElement | null>(null);
     const canvas = useRef<HTMLCanvasElement | null>(null);
@@ -77,7 +78,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
         let randomIndex = blank; // first move will always be the blank tile
 
         // do 1500 valid moves randomly to shuffle the board
-        for (let i=0; i<1500; i++) {
+        for (let i=0; i < 5; i++) {
             // empty valid moves each loop to find new valid moves
             const validMoves = [];
 
@@ -143,6 +144,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS } : {
                     setBoardTiles={setBoardTiles} 
                     rows={ROWS} 
                     cols={COLUMNS} 
+                    setGameEnded={setGameEnded}
                 />
             )}
         </div>
