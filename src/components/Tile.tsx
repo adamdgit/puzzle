@@ -6,12 +6,13 @@ type TileProps = {
     idx: number
 }
 
-export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
+export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols, setGameEnded } : {
     tile: TileProps,
     boardTiles: TileProps[],
     setBoardTiles: React.Dispatch<React.SetStateAction<TileProps[]>>,
     rows: number,
-    cols: number
+    cols: number,
+    setGameEnded: React.Dispatch<React.SetStateAction<boolean>>
 }) {
     const controls = useAnimation();
 
@@ -63,7 +64,8 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols } : {
 
             if (isWinner(updatedTiles)) {
                 console.log("You WIN!");
-                // handle win logic
+                // Game is over
+                setGameEnded(true);
             }
 
             setBoardTiles(updatedTiles);
