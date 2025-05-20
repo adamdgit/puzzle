@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import CroppingTool from './components/CroppingTool';
 import GameBoard from './components/GameBoard';
+import Timer from './components/Timer';
 
 function App() {
   const [croppedImage, setCroppedImage] = useState<HTMLCanvasElement | null>(null);
+  const [gameEnded, setGameEnded] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const [BOARDSIZE] = useState(400);
   const [TILESIZE] = useState(100);
@@ -26,11 +29,8 @@ function App() {
       <CroppingTool
         setCroppedImage={setCroppedImage}
         BOARDSIZE={BOARDSIZE}
+        setGameStarted={setGameStarted}
        />
-
-      {/* {croppedImage && (
-        <img src={croppedImage.toDataURL()} alt="Cropped" />
-      )} */}
 
       {croppedImage && 
         <GameBoard 
@@ -38,6 +38,14 @@ function App() {
           BOARDSIZE={BOARDSIZE}
           ROWS={ROWS}
           COLUMNS={COLUMNS}
+          setGameEnded={setGameEnded}
+        />
+      }
+
+      {gameStarted && 
+        <Timer 
+          gameStarted={gameStarted} 
+          gameEnded={gameEnded}
         />
       }
     </main>
