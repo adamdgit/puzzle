@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import CroppingTool from './components/CroppingTool';
 import GameBoard from './components/GameBoard';
 import Timer from './components/Timer';
+import { useAppContext } from './context/AppContext';
 
 function App() {
-  const [croppedImage, setCroppedImage] = useState<HTMLCanvasElement | null>(null);
-  const [gameEnded, setGameEnded] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
-
-  const [BOARDSIZE] = useState(400);
-  const [TILESIZE] = useState(100);
-  const [ROWS] = useState(BOARDSIZE / TILESIZE);
-  const [COLUMNS] = useState(BOARDSIZE / TILESIZE);
+  const context = useAppContext();
+  const { 
+    croppedImage, gameStarted, 
+    ROWS, TILESIZE
+   } = context;
 
   useEffect(() => {
     // Set the CSS variables to ensure they align with javascript state
@@ -24,29 +22,25 @@ function App() {
 
   return (
     <main>
-      <h1 style={{textAlign: "center"}}>Sliding Picture Puzzle</h1>
+      <h1 style={{ textAlign: "center" }}>Sliding Picture Puzzle</h1>
 
-      <CroppingTool
-        setCroppedImage={setCroppedImage}
-        BOARDSIZE={BOARDSIZE}
-        setGameStarted={setGameStarted}
-       />
+      {!gameStarted &&
+        <CroppingTool />
+      }
+      
+      {croppedImage && 
+        <div className='preview-wrap'>
+          <p>Re-create your image</p>
+          <img src={croppedImage.toDataURL()} width={300} height={300} />
+        </div>
+      }
 
       {croppedImage && 
-        <GameBoard 
-          gameImage={croppedImage} 
-          BOARDSIZE={BOARDSIZE}
-          ROWS={ROWS}
-          COLUMNS={COLUMNS}
-          setGameEnded={setGameEnded}
-        />
+        <GameBoard />
       }
 
       {gameStarted && 
-        <Timer 
-          gameStarted={gameStarted} 
-          gameEnded={gameEnded}
-        />
+        <Timer />
       }
     </main>
   )

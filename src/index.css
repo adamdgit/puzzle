@@ -73,3 +73,9 @@ main {
   font-size: 1.1rem;
   font-weight: bold;
 }
+
+.preview-wrap {
+  display: grid;
+  justify-content: center;
+  text-align: center;
+}

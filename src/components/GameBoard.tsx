@@ -1,18 +1,19 @@
 import { useRef, useEffect, useState } from "react";
 import Tile from "./Tile";
+import { useAppContext } from "../context/AppContext";
 
 type TileProps = {
     imgSrc: string,
     idx: number
 }
 
-export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGameEnded } : {
-    gameImage: HTMLCanvasElement,
-    BOARDSIZE: number,
-    ROWS: number,
-    COLUMNS: number, 
-    setGameEnded: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+export default function GameBoard() {
+    const context = useAppContext();
+    const { 
+        croppedImage, 
+        BOARDSIZE, ROWS, COLUMNS
+     } = context;
+
     const board = useRef<HTMLDivElement | null>(null);
     const canvas = useRef<HTMLCanvasElement | null>(null);
     const [boardTiles, setBoardTiles] = useState<TileProps[]>([]);
@@ -20,7 +21,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGame
     function createTileFromImg() {
         const ctx = canvas?.current?.getContext('2d');
 
-        if (!canvas.current || !ctx) {
+        if (!canvas.current || !ctx || !croppedImage) {
             // setError("Error creating board from image")
             return
         }
@@ -49,7 +50,7 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGame
                     tile_elements.push({ imgSrc: "blank", idx: counter})
                 } else {
                     // draw tile to canvas
-                    ctx.drawImage(gameImage, x, y, tileWidth, tileHeight, 0, 0, tileWidth, tileHeight)
+                    ctx.drawImage(croppedImage, x, y, tileWidth, tileHeight, 0, 0, tileWidth, tileHeight)
                     ctx.rect(x, y, tileWidth, tileHeight)
                     ctx.strokeStyle = 'black'
                     ctx.stroke()
@@ -77,9 +78,10 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGame
         let validRow = Math.floor(blank / ROWS)
         let randomIndex = blank; // first move will always be the blank tile
 
-        // do 1500 valid moves randomly to shuffle the board
-        for (let i=0; i < 5; i++) {
-            // empty valid moves each loop to find new valid moves
+        // We *must* select valid random moves only
+        // the board can become unsolvable if we simply shuffle all tiles
+        for (let i=0; i < 1500; i++) {
+            // reset valid moves each iteration
             const validMoves = [];
 
             // swap random tile with blank tile
@@ -90,20 +92,24 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGame
             validRow = Math.floor(blank / ROWS);
             
             // find each possible valid move based on blank tile index
-            const a = blank +1;
-            const b = blank -1;
-            const c = blank +ROWS;
-            const d = blank -ROWS;
+            const right = blank +1;
+            const left = blank -1;
+            const down = blank +ROWS;
+            const up = blank -ROWS;
 
-            // check if move is valid, insert into validMove array
-            if ((a <= shuffled_tiles.length-1) && (Math.floor(a / ROWS) === validRow)) 
-                { validMoves.push(a) }
-            if ((b >= 0) && (Math.floor(b / ROWS) === validRow)) 
-                { validMoves.push(b) }
-            if ((c <= shuffled_tiles.length-1) && (c % COLUMNS === validCol)) 
-                { validMoves.push(c) }
-            if ((d >= 0) && (d % COLUMNS === validCol)) 
-                { validMoves.push(d) }
+            // Add valid moves only, so we can select a random move each iteration
+            if ((right <= shuffled_tiles.length-1) && (Math.floor(right / ROWS) === validRow)) {
+                validMoves.push(right)
+            }
+            if ((left >= 0) && (Math.floor(left / ROWS) === validRow)) {
+                validMoves.push(left) 
+            }
+            if ((down <= shuffled_tiles.length-1) && (down % COLUMNS === validCol)) {
+                validMoves.push(down)
+            }
+            if ((up >= 0) && (up % COLUMNS === validCol)) {
+                validMoves.push(up) 
+            }
 
             // select a random move from all valid moves
             randomIndex = validMoves[Math.floor(Math.random() * validMoves.length)];
@@ -142,9 +148,6 @@ export default function GameBoard({ gameImage, BOARDSIZE, ROWS, COLUMNS, setGame
                     tile={tile} 
                     boardTiles={boardTiles} 
                     setBoardTiles={setBoardTiles} 
-                    rows={ROWS} 
-                    cols={COLUMNS} 
-                    setGameEnded={setGameEnded}
                 />
             )}
         </div>

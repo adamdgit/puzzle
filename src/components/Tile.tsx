@@ -1,19 +1,20 @@
 import { motion, useAnimation } from 'motion/react'
 import { move_is_valid } from "../utils/moveIsValid";
+import { useAppContext } from '../context/AppContext';
 
 type TileProps = {
     imgSrc: string,
     idx: number
 }
 
-export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols, setGameEnded } : {
+export default function Tile({ tile, boardTiles, setBoardTiles } : {
     tile: TileProps,
     boardTiles: TileProps[],
     setBoardTiles: React.Dispatch<React.SetStateAction<TileProps[]>>,
-    rows: number,
-    cols: number,
-    setGameEnded: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+    const context = useAppContext();
+    const { setGameEnded, ROWS, COLUMNS } = context;
+
     const controls = useAnimation();
 
     function isWinner(updatedTiles: TileProps[]): boolean {      
@@ -32,11 +33,11 @@ export default function Tile({ tile, boardTiles, setBoardTiles, rows, cols, setG
         if (!target_tile) return
 
         const target_idx = boardTiles.findIndex(tile => tile.idx === Number(target_tile.dataset.idx));
-        const blank_Idx = boardTiles.findIndex(tile => tile.idx === (rows * cols - 1));
-        const blank_tile =  boardTiles.find(tile => tile.idx === (rows * cols - 1));
+        const blank_Idx = boardTiles.findIndex(tile => tile.idx === (ROWS * COLUMNS - 1));
+        const blank_tile =  boardTiles.find(tile => tile.idx === (ROWS * COLUMNS - 1));
 
         // returns direction of the blank tile, so we can animate the tile correctly
-        const direction = move_is_valid(target_idx, blank_Idx, cols); 
+        const direction = move_is_valid(target_idx, blank_Idx, COLUMNS); 
 
         // direction can be null (invalid move), show user some visual feedback
         if (!direction || !blank_tile) {

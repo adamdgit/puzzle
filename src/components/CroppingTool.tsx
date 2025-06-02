@@ -1,12 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import Cropper, { Area } from "react-easy-crop"
+import { useAppContext } from "../context/AppContext";
 
 
-export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarted } : {
-    setCroppedImage: React.Dispatch<React.SetStateAction<HTMLCanvasElement | null>>,
-    BOARDSIZE: number,
-    setGameStarted: React.Dispatch<React.SetStateAction<boolean>>
-}) {
+export default function CroppingTool() {
+    const context = useAppContext();
+    const { setCroppedImage, BOARDSIZE, setGameStarted } = context;
+
     const imageUploadEl = useRef<HTMLInputElement>(null);
     const [uploadedFile, setUploadedFile] = useState<string | null>(null); // base64url string
     const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -14,7 +14,7 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarte
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [croppedPixels, setCroppedPixels] = useState<Area | null>(null);
 
-    const [hideCropper, setHideCropper] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     // get user uploaded image and display on page, to be re-sized
     function handleFileUpload() {
@@ -62,10 +62,11 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarte
             );
 
             setCroppedImage(canvas);
-            setHideCropper(true);
         };
 
-        setGameStarted(true);
+        startTransition(() => {
+            setGameStarted(true);
+        });
     }
 
     function handleClickInput() {
@@ -73,7 +74,6 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarte
     }
 
   return (
-    !hideCropper &&
     <>
         <p>Select or take a picture to play with</p>
         <button className="uploadImgBtn" onClick={handleClickInput}>Upload Image</button>
@@ -84,7 +84,10 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarte
             onChange={() => handleFileUpload()}
             ref={imageUploadEl}
         />
-        <div style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}>
+        <div 
+            style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}
+            className={isPending ? 'crop-container hide' : 'crop-container show'}
+        >
             {uploadedFile && (
                 <Cropper
                     showGrid={false}
@@ -101,7 +104,9 @@ export default function CroppingTool({ setCroppedImage, BOARDSIZE, setGameStarte
                 />
             )}
         </div>
-        <button className='play-btn' onClick={handleCrop}>Play!</button>
+        {uploadedFile && 
+            <button className='play-btn' onClick={handleCrop}>Play!</button>
+        }
     </>
   )
 }

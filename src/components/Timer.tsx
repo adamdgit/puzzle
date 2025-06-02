@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
+import { useAppContext } from '../context/AppContext';
 
-export default function Timer({ gameStarted, gameEnded }: {
-    gameStarted: boolean,
-    gameEnded: boolean
-}) {
-    const [_, setTime] = useState(0);
+export default function Timer() {
+    const context = useAppContext();
+    const { gameEnded, gameStarted } = context;
+
     const [mins, setMins] = useState('00');
     const [secs, setSecs] = useState('00');
+    const time = useRef(0);
     const timerRef = useRef<number | null>(null);
 
     function formatTime(time: number) {
@@ -19,12 +20,9 @@ export default function Timer({ gameStarted, gameEnded }: {
     useEffect(() => {
         // add to timer while game is active
         if (gameStarted && !gameEnded) {
-            timerRef.current = setInterval(() => {
-                setTime(prev => {
-                    prev += 1;
-                    formatTime(prev)
-                    return prev
-                });
+            timerRef.current = window.setInterval(() => {
+                time.current += 1;
+                formatTime(time.current);
             }, 1000);
         }
 
