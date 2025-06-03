@@ -7,8 +7,7 @@ import { faFileUpload } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function CroppingTool() {
-    const context = useAppContext();
-    const { setCroppedImage, BOARDSIZE, setGameStarted } = context;
+    const { setCroppedImage, BOARDSIZE, setGameStarted } = useAppContext();
 
     const imageUploadEl = useRef<HTMLInputElement>(null);
     const [uploadedFile, setUploadedFile] = useState<string | null>(null); // base64url string
@@ -119,7 +118,12 @@ export default function CroppingTool() {
             )}
         </div>
         {uploadedFile && 
-            <button className='btn' onClick={handleCrop}>Start Game!</button>
+            <button className='btn' 
+                onClick={handleCrop} 
+                style={{margin: '0 auto'}}
+            >
+                Start Game!
+            </button>
         }
     </React.Fragment>
   )

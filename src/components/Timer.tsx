@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useAppContext } from '../context/AppContext';
 
 export default function Timer() {
-    const context = useAppContext();
-    const { gameEnded, gameStarted } = context;
+    const { gameEnded, gameStarted } = useAppContext();
 
     const [mins, setMins] = useState('00');
     const [secs, setSecs] = useState('00');
@@ -33,6 +32,7 @@ export default function Timer() {
 
   return (
     <div className='timer'>
+        <span>Time: </span>
         <span>{mins}</span>
         <span>:</span>
         <span>{secs}</span>

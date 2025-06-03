@@ -12,9 +12,7 @@ export default function Tile({ tile, boardTiles, setBoardTiles } : {
     boardTiles: TileProps[],
     setBoardTiles: React.Dispatch<React.SetStateAction<TileProps[]>>,
 }) {
-    const context = useAppContext();
-    const { setGameEnded, ROWS, COLUMNS } = context;
-
+    const { setGameEnded, ROWS, COLUMNS } = useAppContext();
     const controls = useAnimation();
 
     function isWinner(updatedTiles: TileProps[]): boolean {      

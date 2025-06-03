@@ -71,7 +71,8 @@ main {
 }
 
 .timer {
-  font-size: 1.1rem;
+  text-align: center;
+  font-size: 1.3rem;
   font-weight: bold;
 }
 
@@ -79,4 +80,5 @@ main {
   display: grid;
   justify-content: center;
   text-align: center;
+  padding-bottom: 1rem;
 }

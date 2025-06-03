@@ -8,11 +8,10 @@ type TileProps = {
 }
 
 export default function GameBoard() {
-    const context = useAppContext();
     const { 
         croppedImage, 
         BOARDSIZE, ROWS, COLUMNS
-     } = context;
+     } = useAppContext();
 
     const board = useRef<HTMLDivElement | null>(null);
     const canvas = useRef<HTMLCanvasElement | null>(null);

@@ -33,6 +33,7 @@ function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
+            style={{display: 'grid', gap: '1rem'}}
           >
             <CroppingTool />
           </motion.div>
