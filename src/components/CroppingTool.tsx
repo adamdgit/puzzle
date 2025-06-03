@@ -1,6 +1,9 @@
 import { useRef, useState, useTransition } from "react";
 import Cropper, { Area } from "react-easy-crop"
 import { useAppContext } from "../context/AppContext";
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileUpload } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function CroppingTool() {
@@ -74,9 +77,17 @@ export default function CroppingTool() {
     }
 
   return (
-    <>
-        <p>Select or take a picture to play with</p>
-        <button className="uploadImgBtn" onClick={handleClickInput}>Upload Image</button>
+    <React.Fragment>
+        <div className="upload-btn-wrap">
+            Select an image to play
+            <button className="btn" onClick={handleClickInput}>
+                Upload Image
+                <FontAwesomeIcon 
+                    className="upload-svg" icon={faFileUpload} 
+                />
+            </button>
+        </div>
+
         <input 
             style={{display: "none"}}
             type='file' 
@@ -89,24 +100,27 @@ export default function CroppingTool() {
             className={isPending ? 'crop-container hide' : 'crop-container show'}
         >
             {uploadedFile && (
-                <Cropper
-                    showGrid={false}
-                    image={uploadedFile}
-                    crop={crop}
-                    zoom={zoom}
-                    aspect={1} // square
-                    onCropChange={setCrop}
-                    onZoomChange={setZoom}
-                    onCropComplete={(croppedArea, croppedPixels) => {
-                        setCroppedAreaPixels(croppedArea)
-                        setCroppedPixels(croppedPixels)
-                    }}
-                />
+                <React.Fragment>
+                    <div>Use the tool to crop or resize your image</div>
+                    <Cropper
+                        showGrid={false}
+                        image={uploadedFile}
+                        crop={crop}
+                        zoom={zoom}
+                        aspect={1} // square
+                        onCropChange={setCrop}
+                        onZoomChange={setZoom}
+                        onCropComplete={(croppedArea, croppedPixels) => {
+                            setCroppedAreaPixels(croppedArea)
+                            setCroppedPixels(croppedPixels)
+                        }}
+                    />
+                </React.Fragment>
             )}
         </div>
         {uploadedFile && 
-            <button className='play-btn' onClick={handleCrop}>Play!</button>
+            <button className='btn' onClick={handleCrop}>Start Game!</button>
         }
-    </>
+    </React.Fragment>
   )
 }
