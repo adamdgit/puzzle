@@ -3,6 +3,7 @@ import CroppingTool from './components/CroppingTool';
 import GameBoard from './components/GameBoard';
 import Timer from './components/Timer';
 import { useAppContext } from './context/AppContext';
+import { AnimatePresence, motion } from 'motion/react';
 
 function App() {
   const context = useAppContext();
@@ -24,24 +25,40 @@ function App() {
     <main>
       <h1 style={{ textAlign: "center" }}>Sliding Picture Puzzle</h1>
 
-      {!gameStarted &&
-        <CroppingTool />
-      }
-      
-      {croppedImage && 
-        <div className='preview-wrap'>
-          <p>Re-create your image</p>
-          <img src={croppedImage.toDataURL()} width={300} height={300} />
-        </div>
-      }
+      <AnimatePresence mode="wait">
+        {!gameStarted &&
+          <motion.div
+            key="crop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+          >
+            <CroppingTool />
+          </motion.div>
+        }
+      </AnimatePresence>
 
-      {croppedImage && 
-        <GameBoard />
-      }
+      <AnimatePresence mode="wait">
+        {gameStarted && 
+          <motion.div
+            key="crop"
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, delay: 0.45 }}
+          >
+            <div className='preview-wrap'>
+              <p>Re-create your image</p>
+              <img src={croppedImage?.toDataURL() ?? ''} width={300} height={300} />
+            </div>
 
-      {gameStarted && 
-        <Timer />
-      }
+            <GameBoard />
+
+            <Timer />
+          </motion.div>
+        }
+      </AnimatePresence>
     </main>
   )
 }
