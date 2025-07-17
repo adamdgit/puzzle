@@ -59,11 +59,12 @@ export default function Tile({ tile, boardTiles, setBoardTiles } : {
             controls.set({ transform: translateReset });
 
             const updatedTiles = [...boardTiles];
-            [updatedTiles[target_idx], updatedTiles[blank_Idx]] = [updatedTiles[blank_Idx], updatedTiles[target_idx]];
+            // swaps tiles in array
+            [updatedTiles[target_idx], updatedTiles[blank_Idx]] 
+            = [updatedTiles[blank_Idx], updatedTiles[target_idx]];
 
             if (isWinner(updatedTiles)) {
                 console.log("You WIN!");
-                // Game is over
                 setGameEnded(true);
             }
 

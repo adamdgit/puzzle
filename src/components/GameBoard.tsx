@@ -135,7 +135,7 @@ export default function GameBoard() {
 
         const unshuffled_tiles = createTileFromImg();
         shuffleBoard(unshuffled_tiles!);
-    },[board.current]);
+    },[]);
 
   return (
     <>

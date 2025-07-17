@@ -1,10 +1,9 @@
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop"
 import { useAppContext } from "../context/AppContext";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileUpload } from "@fortawesome/free-solid-svg-icons";
-
 
 export default function CroppingTool() {
     const { setCroppedImage, BOARDSIZE, setGameStarted } = useAppContext();
@@ -16,8 +15,6 @@ export default function CroppingTool() {
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [croppedPixels, setCroppedPixels] = useState<Area | null>(null);
 
-    const [isPending, startTransition] = useTransition();
-
     // get user uploaded image and display on page, to be re-sized
     function handleFileUpload() {
         const file = imageUploadEl.current?.files?.[0];
@@ -28,7 +25,7 @@ export default function CroppingTool() {
         reader.onload = (event) => {
             const dataimgurl = event.target?.result;
             if (typeof dataimgurl === "string") {
-            setUploadedFile(dataimgurl)
+                setUploadedFile(dataimgurl);
             }
         }
         }
@@ -66,9 +63,7 @@ export default function CroppingTool() {
             setCroppedImage(canvas);
         };
 
-        startTransition(() => {
-            setGameStarted(true);
-        });
+        setGameStarted(true);
     }
 
     function handleClickInput() {
@@ -78,7 +73,7 @@ export default function CroppingTool() {
   return (
     <React.Fragment>
         <div className="upload-btn-wrap">
-            Select an image to play
+            Upload or take a photo to play
             <button className="btn" onClick={handleClickInput}>
                 Upload Image
                 <FontAwesomeIcon 
@@ -94,15 +89,18 @@ export default function CroppingTool() {
             onChange={() => handleFileUpload()}
             ref={imageUploadEl}
         />
-        <div 
-            style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}
-            className={isPending ? 'crop-container hide' : 'crop-container show'}
-        >
+
+        {uploadedFile && 
+            <div className="tooltip">
+                Use the tool to crop or resize your image, click start game when ready to play.
+            </div>
+        }
+
+        <div style={{ position: 'relative', width: BOARDSIZE, height: BOARDSIZE }}>
             {uploadedFile && (
                 <React.Fragment>
-                    <div>Use the tool to crop or resize your image</div>
                     <Cropper
-                        showGrid={false}
+                        showGrid={true}
                         image={uploadedFile}
                         crop={crop}
                         zoom={zoom}

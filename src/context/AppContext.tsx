@@ -32,14 +32,14 @@ export const AppProvider = ({ children } : { children: ReactNode }) => {
   return (
     <AppContext.Provider
         value={{
-        croppedImage, setCroppedImage,
-        gameEnded, setGameEnded,
-        gameStarted, setGameStarted,
-        BOARDSIZE,
-        TILESIZE,
-        ROWS,
-        COLUMNS,
-      }}
+          croppedImage, setCroppedImage,
+          gameEnded, setGameEnded,
+          gameStarted, setGameStarted,
+          BOARDSIZE,
+          TILESIZE,
+          ROWS,
+          COLUMNS,
+        }}
     >
       {children}
     </AppContext.Provider>
