@@ -36,20 +36,20 @@ main {
   height: 20px;
 }
 
-.btn {
+.btn, .restart-btn {
   display: flex;
   align-items: center;
   gap: .5rem;
   padding: .8rem 1.4rem;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 6px;
   box-shadow: 0 4px 15px 0 #ccc;
   width: fit-content;
   transition: 120ms ease-in-out;
 }
 
-.btn:hover {
+.btn:hover, .restart-btn:hover {
   background-color: #333;
   color: white;
 }
@@ -81,4 +81,35 @@ main {
   justify-content: center;
   text-align: center;
   padding-bottom: 1rem;
+}
+
+.hiscore-wrap {
+  z-index: 99;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.hiscore-btn {
+  z-index: 999;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: .7rem;
+  background: #222;
+  border-radius: 5px;
+  color: white;
+}
+
+.hiscores {
+  display: grid;
+  gap: .5rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 6px;
+  list-style: none;
 }
