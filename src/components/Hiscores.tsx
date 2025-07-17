@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
+import { formatTime } from '../utils/formatTime';
+
+type LShiscores = {
+    imgDataURL: string;
+    score: number;
+}
 
 export default function Hiscores() {
-    const [hiscores, setHiscores] = useState<number[]>([]);
+    const [hiscores, setHiscores] = useState<LShiscores[]>([]);
 
     useEffect(() => {
         // Fetch hiscores on mount
@@ -19,14 +25,14 @@ export default function Hiscores() {
   return (
     <div className='hiscore-wrap'>
         <ul className='hiscores'>
-            <h2>Hiscores</h2>
+            <h1>Hiscores</h1>
             {hiscores.length > 0 ? 
-                hiscores.map((score, i) => {
-                    const mins = Math.floor(Number(score) / 60);
-                    const secs = Number(score) % 60;
-                    const formatmins = `${String(mins).padStart(2, '0')}`
-                    const formatsecs = `${String(secs).padStart(2, '0')}`
-                    return <li key={i}>Time: {formatmins}:{formatsecs}</li>
+                hiscores.map((x, i) => {
+                    const [mins, secs] = formatTime(x.score)
+                    return <li key={i}>
+                        <span>Time: {mins}:{secs}</span>
+                        <img src={x.imgDataURL} alt='img preview' width={100} height={100}/>
+                    </li>
                 })
                 : <p>No Hiscores found.</p>
             }

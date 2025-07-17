@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAppContext } from '../context/AppContext';
+import { formatTime } from '../utils/formatTime';
+
+type LShiscores = {
+    imgDataURL: string;
+    score: number;
+}
 
 export default function Timer() {
-    const { gameStarted, gameEnded } = useAppContext();
+    const { gameStarted, gameEnded, croppedImage } = useAppContext();
     const [mins, setMins] = useState('00');
     const [secs, setSecs] = useState('00');
     const time = useRef(0);
@@ -11,7 +17,7 @@ export default function Timer() {
     function updateHiscores() {
         const key = 'hiscore';
         const currentTime = time.current;
-        let scores: number[] = [];
+        let scores: LShiscores[] = [];
 
         try {
             const storage = localStorage.getItem(key);
@@ -22,8 +28,21 @@ export default function Timer() {
             console.error("Failed to parse high scores from localStorage", err);
         }
 
-        scores.push(currentTime);
-        scores = scores.sort((a, b) => a - b).slice(0, 10);
+        // Create new canvas to shrink game image for local storage hiscores
+        const canvas = document.createElement('canvas');
+        const HISCOREIMGSIZE = 100 // pixels
+        canvas.width = HISCOREIMGSIZE;
+        canvas.height = HISCOREIMGSIZE;
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx || !croppedImage) return
+
+        ctx.drawImage(croppedImage, 0, 0, HISCOREIMGSIZE, HISCOREIMGSIZE);
+
+        const imgDataURL =  canvas?.toDataURL() ?? '';
+        // save small img and time
+        scores.push({ imgDataURL: imgDataURL, score: currentTime });
+        scores = scores.sort((a, b) => a.score - b.score).slice(0, 10);
 
         try {
             localStorage.setItem(key, JSON.stringify(scores));
@@ -37,8 +56,9 @@ export default function Timer() {
         if (gameStarted && !gameEnded) {
             timerRef.current = setInterval(() => {
                 time.current += 1;
-                setMins(String(Math.floor(time.current / 60)).padStart(2, '0'));
-                setSecs(String(time.current % 60).padStart(2, '0'))
+                const [mins, secs] = formatTime(time.current)
+                setMins(mins);
+                setSecs(secs);
             }, 1000);
         }
 
